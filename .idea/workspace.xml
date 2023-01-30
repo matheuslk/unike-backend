@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c03df548-81b3-4575-bf99-a598da293b40" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.prettierrc.json" beforeDir="false" afterPath="$PROJECT_DIR$/.prettierrc.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Controllers/Http/AuthController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/Controllers/Http/AuthController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Exceptions/Handler.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/Exceptions/Handler.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Middleware/Auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/Middleware/Auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/app.ts" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/config/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/bodyparser.ts" beforeDir="false" afterPath="$PROJECT_DIR$/config/bodyparser.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/cors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/config/cors.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contracts/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/contracts/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/1674653680310_users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/1674653680310_users.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database/migrations/1674653872247_jwt_tokens.ts" beforeDir="false" afterPath="$PROJECT_DIR$/database/migrations/1674653872247_jwt_tokens.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/providers/AppProvider.ts" beforeDir="false" afterPath="$PROJECT_DIR$/providers/AppProvider.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/server.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/start/kernel.ts" beforeDir="false" afterPath="$PROJECT_DIR$/start/kernel.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/start/routes.ts" beforeDir="false" afterPath="$PROJECT_DIR$/start/routes.ts" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="2L2xfoY5ivvBacngLh7X6669ZmW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c03df548-81b3-4575-bf99-a598da293b40" name="Default Changelist" comment="" />
+      <created>1675083089823</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1675083089823</updated>
+    </task>
+    <servers />
+  </component>
+</project>

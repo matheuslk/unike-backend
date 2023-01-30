@@ -101,7 +101,7 @@ const authConfig: AuthConfig = {
         | that time.
         |
         */
-        model: () => import('App/Models/User'),
+        model: async () => await import('App/Models/User'),
       },
     },
     jwt: {
@@ -109,7 +109,7 @@ const authConfig: AuthConfig = {
       publicKey: Env.get('JWT_PUBLIC_KEY', '').replace(/\\n/g, '\n'),
       privateKey: Env.get('JWT_PRIVATE_KEY', '').replace(/\\n/g, '\n'),
       persistJwt: false,
-      jwtDefaultExpire: '15m',
+      jwtDefaultExpire: '30m',
       refreshTokenDefaultExpire: '1d',
       tokenProvider: {
         type: 'api',
@@ -121,7 +121,7 @@ const authConfig: AuthConfig = {
         driver: 'lucid',
         identifierKey: 'id',
         uids: ['email'],
-        model: () => import('App/Models/User'),
+        model: async () => await import('App/Models/User'),
       },
     },
   },

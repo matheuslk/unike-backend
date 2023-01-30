@@ -3,7 +3,10 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import type User from 'App/Models/User';
 
 export default class AuthController {
-  public async login({ auth, request }: HttpContextContract): Promise<any> {
+  public async login({
+    auth,
+    request,
+  }: HttpContextContract): Promise<JWTTokenContract<User>> {
     const { email, password } = request.body();
     return await auth.attempt(email, password);
   }
@@ -12,8 +15,11 @@ export default class AuthController {
     auth,
     request,
   }: HttpContextContract): Promise<JWTTokenContract<User>> {
-    const { refreshToken } = request.body();
-    const jwt = await auth.use('jwt').loginViaRefreshToken(refreshToken);
-    return jwt;
+    const refreshToken = request.headers().refresh_token as string;
+    return await auth.use('jwt').loginViaRefreshToken(refreshToken);
+  }
+
+  public async check({ response }: HttpContextContract): Promise<void> {
+    response.send(200);
   }
 }
