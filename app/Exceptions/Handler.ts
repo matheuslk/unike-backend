@@ -15,8 +15,10 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     if (exception.code === 'E_UNAUTHORIZED_ACCESS') {
       status = 401;
       message = ERROR_MESSAGES.UNAUTHORIZED_ACCESS;
-    }
-    if (
+    } else if (exception.code === 'E_INVALID_REFRESH_TOKEN') {
+      status = 401;
+      message = ERROR_MESSAGES.INVALID_REFRESH_TOKEN;
+    } else if (
       exception.code === 'E_INVALID_AUTH_UID' ||
       exception.code === 'E_INVALID_AUTH_PASSWORD'
     ) {
@@ -24,12 +26,10 @@ export default class ExceptionHandler extends HttpExceptionHandler {
       message = ERROR_MESSAGES.INVALID_CREDENTIALS;
     }
     if (status > 0 && message.length > 0) {
-      const error = new CustomError(message, exception);
-      ctx.response.status(400).send(error);
+      const error = new CustomError(message, exception, '0');
+      ctx.response.status(status).send(error);
       return;
     }
-
-    console.log('ERROR CODE', exception.code);
     return await super.handle(exception, ctx);
   }
 }

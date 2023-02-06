@@ -42,4 +42,5 @@ Server.middleware.register([
 */
 Server.middleware.registerNamed({
   auth: async () => await import('App/Middleware/Auth'),
+  delay: async () => await import('App/Middleware/Delay'),
 });

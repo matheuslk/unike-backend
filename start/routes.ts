@@ -5,5 +5,7 @@ Route.group(() => {
   Route.get('/refresh', 'AuthController.refresh');
   Route.group(() => {
     Route.get('/check', 'AuthController.check');
-  }).middleware('auth:jwt');
-}).prefix('api/v1');
+  }).middleware(['auth:jwt']);
+})
+  .middleware('delay')
+  .prefix('api/v1');

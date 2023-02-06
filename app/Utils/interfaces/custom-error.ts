@@ -1,5 +1,5 @@
 export interface ICustomError {
-  code?: string;
+  code: string;
   message: string;
   error: any;
 }
