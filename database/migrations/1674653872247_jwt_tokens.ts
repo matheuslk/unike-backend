@@ -12,11 +12,10 @@ export default class JwtTokens extends BaseSchema {
         .references('id')
         .inTable('users')
         .onDelete('CASCADE');
-      table.string('name').notNullable();
-      table.string('type').notNullable();
+      table.string('name', 45).notNullable();
+      table.string('type', 45).notNullable();
       table.string('token', 64).notNullable().unique();
-      table.dateTime('expires_at').notNullable();
-      table.dateTime('created_at').notNullable();
+      table.timestamps();
     });
   }
 

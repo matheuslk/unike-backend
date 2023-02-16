@@ -2,13 +2,14 @@ import { Exception } from '@adonisjs/core/build/standalone';
 import type { JWTTokenContract } from '@ioc:Adonis/Addons/Jwt';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import type User from 'App/Models/User';
+import LoginValidator from 'App/Validators/LoginValidator';
 
 export default class AuthController {
   public async login({
     auth,
     request,
   }: HttpContextContract): Promise<JWTTokenContract<User>> {
-    const { email, password } = request.body();
+    const { email, password } = await request.validate(LoginValidator);
     return await auth.attempt(email, password);
   }
 
@@ -20,7 +21,7 @@ export default class AuthController {
       const refreshToken = request.headers().refresh_token as string;
       return await auth.use('jwt').loginViaRefreshToken(refreshToken);
     } catch (error) {
-      throw new Exception('', 500, 'E_INVALID_REFRESH_TOKEN');
+      throw new Exception('', undefined, 'E_INVALID_REFRESH_TOKEN');
     }
   }
 

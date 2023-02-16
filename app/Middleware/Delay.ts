@@ -8,7 +8,7 @@ export default class Delay {
     await new Promise(resolve =>
       setTimeout(() => {
         resolve(next());
-      }, 2500)
+      }, 2000)
     );
   }
 }

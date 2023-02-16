@@ -26,8 +26,9 @@ export default class ExceptionHandler extends HttpExceptionHandler {
       message = ERROR_MESSAGES.INVALID_CREDENTIALS;
     }
     if (status > 0 && message.length > 0) {
-      const error = new CustomError(message, exception, '0');
-      ctx.response.status(status).send(error);
+      ctx.response
+        .status(status)
+        .send(new CustomError('0', message, exception));
       return;
     }
     return await super.handle(exception, ctx);

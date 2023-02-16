@@ -22,8 +22,8 @@ export default class User extends BaseModel {
   public updatedAt: DateTime;
 
   @beforeSave()
-  public static async hashPassword(user: User) {
-    if (user.$dirty.password) {
+  public static async hashPassword(user: User): Promise<void> {
+    if (user.$dirty.password.length > 0) {
       user.password = await Hash.make(user.password);
     }
   }
