@@ -3,28 +3,31 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import Image from 'App/Models/Image';
 import Product from 'App/Models/Product';
 import Size from 'App/Models/Size';
+import ProductFilterValidator from 'App/Validators/ProductFilterValidator';
 import ProductStoreValidator from 'App/Validators/ProductStoreValidator';
 
 export default class ProductsController {
-  public async filter({ request }: HttpContextContract) {
-    const { name, category_id, size } = request.body();
+  public async filter({ request }: HttpContextContract): Promise<Product[]> {
+    const { name, category_id, size } = await request.validate(
+      ProductFilterValidator
+    );
 
     const products = Product.query();
-    if (name) {
-      products.where('name', 'like', `%${name}%`);
+    if (name !== undefined) {
+      await products.where('name', 'like', `%${name}%`);
     }
-    if (category_id) {
-      products.where('category_id', category_id);
+    if (category_id !== undefined) {
+      await products.where('category_id', category_id);
     }
-    if (size) {
-      products
+    if (size !== undefined) {
+      await products
         .join('sizes', 'sizes.product_id', '=', 'products.id')
         .where('sizes.size', size);
     }
     return await products;
   }
 
-  public async store({ request }: HttpContextContract) {
+  public async store({ request }: HttpContextContract): Promise<Product> {
     const body = await request.validate(ProductStoreValidator);
 
     const product = await Product.create({
@@ -35,28 +38,38 @@ export default class ProductsController {
       description: body.description,
     });
 
-    if (body.sizes?.length) {
-      body.sizes.forEach((size) => {
+    if (body.sizes !== undefined) {
+      body.sizes.forEach(size => {
         Size.create({
           size,
           product_id: product.id,
-        });
+        })
+          .then()
+          .catch(error => {
+            console.log(error.stack);
+          });
       });
     }
 
-    if (body.files?.length) {
+    if (body.files !== undefined) {
       body.files.forEach((file, index) => {
-        const file_name = `${product.id}-${index}-file.${file.extname}`;
-        file.moveToDisk('./', {
-          name: file_name,
-        });
-        Image.create({
-          file_name,
-          product_id: product.id,
-        });
+        const file_name = `${product.id}-${index}-file.${file.extname ?? ''}`;
+        Promise.all([
+          file.moveToDisk('./', {
+            name: file_name,
+          }),
+          Image.create({
+            file_name,
+            product_id: product.id,
+          }),
+        ])
+          .then()
+          .catch(error => {
+            console.log(error.stack);
+          });
       });
     } else {
-      Image.create({
+      await Image.create({
         file_name: `default.jpg`,
         product_id: product.id,
       });
@@ -65,7 +78,7 @@ export default class ProductsController {
     return product;
   }
 
-  public async show({ params }: HttpContextContract) {
+  public async show({ params }: HttpContextContract): Promise<Product[]> {
     return await Product.query()
       .where('id', params.id)
       .preload('category')
@@ -73,62 +86,106 @@ export default class ProductsController {
       .preload('images');
   }
 
-  public async update({ request, product }: HttpContextContract) {
+  public async update({
+    request,
+    product,
+  }: HttpContextContract): Promise<Product> {
     const body = await request.validate(ProductStoreValidator);
 
-    if (body.deleteSizes) {
+    if (body.deleteSizes === true) {
       await product.related('sizes').query().delete();
-    } else if (body.sizes?.length) {
+    } else if (body.sizes !== undefined) {
       const sizes = await product.related('sizes').query();
       body.sizes.forEach((size, index) => {
-        sizes[index]
-          ? sizes[index].merge({ size }).save()
-          : Size.create({ size, product_id: product.id });
+        const currentSize: Size | undefined = sizes[index];
+        currentSize !== undefined
+          ? currentSize
+              .merge({ size })
+              .save()
+              .then()
+              .catch(error => {
+                console.log(error.stack);
+              })
+          : Size.create({ size, product_id: product.id })
+              .then()
+              .catch(error => {
+                console.log(error.stack);
+              });
       });
-      if (body.sizes?.length < sizes.length) {
+      if (body.sizes.length < sizes.length) {
         for (let index = body.sizes.length; index <= sizes.length; index++) {
           if (index === sizes.length) {
             break;
           }
-          sizes[index].delete();
+          await sizes[index].delete();
         }
       }
     }
 
     const images = await product.related('images').query();
-    if (body.deleteFiles) {
+    if (body.deleteFiles === true) {
       images.forEach((image, index) => {
         if (index === 0) {
           if (image.file_name !== 'default.jpg') {
-            Drive.delete(image.file_name);
-            image.merge({ file_name: 'default.jpg' }).save();
+            Promise.all([
+              Drive.delete(image.file_name),
+              image.merge({ file_name: 'default.jpg' }).save(),
+            ])
+              .then()
+              .catch(error => {
+                console.log(error.stack);
+              });
           }
           return;
         }
-        Drive.delete(image.file_name);
-        image.delete();
+        Promise.all([Drive.delete(image.file_name), image.delete()])
+          .then()
+          .catch(error => {
+            console.log(error.stack);
+          });
       });
-    } else if (body.files?.length) {
+    } else if (body.files !== undefined) {
       body.files.forEach((file, index) => {
-        const currentImage = images[index];
-        const file_name = `${product.id}-${index}-file.${file.extname}`;
-        file.moveToDisk('./', {
-          name: file_name,
-        });
-        if (currentImage) {
-          currentImage.merge({ file_name }).save();
+        const currentImage: Image | undefined = images[index];
+        const file_name = `${product.id}-${index}-file.${file.extname ?? ''}`;
+        file
+          .moveToDisk('./', {
+            name: file_name,
+          })
+          .then()
+          .catch(error => {
+            console.log(error.stack);
+          });
+        if (currentImage !== undefined) {
+          currentImage
+            .merge({ file_name })
+            .save()
+            .then()
+            .catch(error => {
+              console.log(error.stack);
+            });
           return;
         }
-        Image.create({ file_name, product_id: product.id });
+        Image.create({ file_name, product_id: product.id })
+          .then()
+          .catch(error => {
+            console.log(error.stack);
+          });
       });
-      if (body.files?.length < images.length) {
+      if (body.files.length < images.length) {
         for (let index = body.files.length; index <= images.length; index++) {
           if (index === images.length) {
             break;
           }
           const currentImage = images[index];
-          Drive.delete(currentImage.file_name);
-          currentImage.delete();
+          Promise.all([
+            Drive.delete(currentImage.file_name),
+            currentImage.delete(),
+          ])
+            .then()
+            .catch(error => {
+              console.log(error.stack);
+            });
         }
       }
     }
@@ -145,18 +202,27 @@ export default class ProductsController {
     return product;
   }
 
-  public async destroy({ product }: HttpContextContract) {
+  public async destroy({ product }: HttpContextContract): Promise<Product> {
     const images = await product.related('images').query();
     images.forEach((image, index) => {
       if (index === 0) {
         if (image.file_name !== 'default.jpg') {
-          Drive.delete(image.file_name);
-          image.merge({ file_name: 'default.jpg' }).save();
+          Promise.all([
+            Drive.delete(image.file_name),
+            image.merge({ file_name: 'default.jpg' }).save(),
+          ])
+            .then()
+            .catch(error => {
+              console.log(error.stack);
+            });
         }
         return;
       }
-      Drive.delete(image.file_name);
-      image.delete();
+      Promise.all([Drive.delete(image.file_name), image.delete()])
+        .then()
+        .catch(error => {
+          console.log(error.stack);
+        });
     });
     await product.delete();
     return product;

@@ -1,4 +1,4 @@
-import {
+import type {
   MessagesBagContract,
   ErrorReporterContract,
 } from '@ioc:Adonis/Core/Validator';
@@ -8,7 +8,10 @@ export class DefaultReporter implements ErrorReporterContract {
   public hasErrors = false;
   private message: string;
 
-  constructor(private messages: MessagesBagContract, private bail: boolean) {
+  constructor(
+    private readonly messages: MessagesBagContract,
+    private readonly bail: boolean
+  ) {
     this.bail = true;
   }
 
@@ -18,7 +21,7 @@ export class DefaultReporter implements ErrorReporterContract {
     message: string,
     arrayExpressionPointer?: string,
     args?: any
-  ) {
+  ): void {
     this.hasErrors = true;
     console.log('DEFAULT REPORTER ERROR POINTER,RULE', pointer, rule);
     const errorMessage = this.messages.get(
@@ -32,13 +35,11 @@ export class DefaultReporter implements ErrorReporterContract {
     this.message = errorMessage;
 
     if (this.bail) {
-      throw this.toError();
+      throw new BadRequestException(this.message);
     }
   }
 
-  public toError(): void {
-    throw new BadRequestException(this.message);
-  }
+  public toError(): void {}
 
   public toJSON(): void {}
 }
