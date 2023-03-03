@@ -7,7 +7,7 @@ export default class FindCategory {
   public async handle(
     { request }: HttpContextContract,
     next: () => Promise<void>
-  ) {
+  ): Promise<void> {
     const { category_id } = request.body();
     try {
       await Category.findOrFail(category_id);

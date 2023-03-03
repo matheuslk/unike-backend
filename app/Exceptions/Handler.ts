@@ -9,18 +9,19 @@ export default class ExceptionHandler extends HttpExceptionHandler {
     super(Logger);
   }
 
-  public async handle(error: any, ctx: HttpContextContract) {
+  public async handle(error: any, ctx: HttpContextContract): Promise<any> {
     const exception_codes = [
       'E_UNAUTHORIZED_ACCESS',
       'E_INVALID_REFRESH_TOKEN',
     ];
 
     if (exception_codes.includes(error.code)) {
-      return ctx.response
+      ctx.response
         .status(401)
         .send(new HttpError('0', ERROR_MESSAGES.UNAUTHORIZED));
+      return;
     }
 
-    return super.handle(error, ctx);
+    return await super.handle(error, ctx);
   }
 }

@@ -9,9 +9,9 @@ export default class ProductStoreValidator {
 
   public schema = schema.create({
     name: schema.string([rules.minLength(4), rules.maxLength(45)]),
-    price: schema.number([rules.range(0, 7000)]),
-    amount: schema.number([rules.range(0, 50)]),
-    category_id: schema.number(),
+    price: schema.number([rules.range(1, 7000)]),
+    amount: schema.number([rules.range(1, 50)]),
+    category_id: schema.number([rules.range(1, 6)]),
     description: schema.string.optional([rules.maxLength(255)]),
     sizes: schema.array.optional().members(schema.string()),
     files: schema.array.optional().members(
@@ -29,6 +29,6 @@ export default class ProductStoreValidator {
       return 'Dados inválidos, tente novamente.';
     },
     'file.size': 'Imagens devem possuir um tamanho máximo de 1mb.',
-    'file.extnames': 'Imagens devem possuir um formato entre: jpg, png, jpeg.',
+    'file.extnames': 'Imagens devem possuir um formato entre: jpg, png e jpeg.',
   };
 }

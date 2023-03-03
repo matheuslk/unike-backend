@@ -4,7 +4,10 @@ import Product from 'App/Models/Product';
 import { ERROR_MESSAGES } from 'App/Utils/enums/error-messages';
 
 export default class FindProduct {
-  public async handle(ctx: HttpContextContract, next: () => Promise<void>) {
+  public async handle(
+    ctx: HttpContextContract,
+    next: () => Promise<void>
+  ): Promise<void> {
     const { id } = ctx.params;
     try {
       const product = await Product.findOrFail(id);
