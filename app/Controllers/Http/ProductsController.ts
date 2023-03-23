@@ -1,23 +1,24 @@
 import Drive from '@ioc:Adonis/Core/Drive';
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import BadRequestException from 'App/Exceptions/BadRequestException';
+import Category from 'App/Models/Category';
 import Image from 'App/Models/Image';
 import Product from 'App/Models/Product';
 import Size from 'App/Models/Size';
+import { ERROR_MESSAGES } from 'App/Utils/enums/error-messages';
 import ProductFilterValidator from 'App/Validators/ProductFilterValidator';
 import ProductStoreValidator from 'App/Validators/ProductStoreValidator';
 
 export default class ProductsController {
   public async filter({ request }: HttpContextContract): Promise<Product[]> {
-    const { name, category_id } = await request.validate(
-      ProductFilterValidator
-    );
+    const { name, categories } = await request.validate(ProductFilterValidator);
 
     const products = Product.query();
     if (name !== undefined) {
       await products.where('name', 'like', `%${name}%`);
     }
-    if (category_id !== undefined) {
-      await products.where('category_id', category_id);
+    if (categories !== undefined && categories.length > 0) {
+      await products.whereIn('category_id', categories);
     }
     // if (size !== undefined) {
     //   await products
@@ -70,12 +71,17 @@ export default class ProductsController {
     return product;
   }
 
-  public async show({ params }: HttpContextContract): Promise<Product[]> {
-    return await Product.query()
+  public async show({ params }: HttpContextContract): Promise<Product> {
+    const product = await Product.query()
       .where('id', params.id)
       .preload('category')
+      .preload('images')
       .preload('sizes')
-      .preload('images');
+      .first();
+    if (product === null) {
+      throw new BadRequestException(ERROR_MESSAGES.PRODUCT_NOT_FOUND);
+    }
+    return product;
   }
 
   public async update({
@@ -166,5 +172,23 @@ export default class ProductsController {
 
     await product.delete();
     return product;
+  }
+
+  public async filters(ctx: HttpContextContract): Promise<{
+    categories: Category[];
+    sizes: Size[];
+  }> {
+    const filters = await Promise.all([
+      Category.query().orderBy('id', 'asc'),
+      Size.query()
+        .join('products', 'products.id', '=', 'sizes.product_id')
+        .where('products.category_id', 1)
+        .distinct('sizes.size')
+        .orderBy('sizes.size', 'asc'),
+    ]);
+    return {
+      categories: filters[0],
+      sizes: filters[1],
+    };
   }
 }

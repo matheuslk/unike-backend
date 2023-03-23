@@ -28,7 +28,7 @@ const corsConfig: CorsConfig = {
   |                     one of the above values.
   |
   */
-  origin: ['http://localhost:4200'],
+  origin: ['http://127.0.0.1:4200', 'http://localhost:4200'],
   methods: ['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   headers: true,
   exposeHeaders: [

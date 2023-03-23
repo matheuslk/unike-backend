@@ -2,7 +2,7 @@ import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
 import Product from 'App/Models/Product';
 
 export default class extends BaseSeeder {
-  public async run() {
+  public async run(): Promise<void> {
     await Product.createMany([
       {
         name: 'anel de prata',

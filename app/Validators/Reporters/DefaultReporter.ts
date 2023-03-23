@@ -23,7 +23,6 @@ export class DefaultReporter implements ErrorReporterContract {
     args?: any
   ): void {
     this.hasErrors = true;
-    console.log('DEFAULT REPORTER ERROR POINTER,RULE', pointer, rule);
     const errorMessage = this.messages.get(
       pointer,
       rule,

@@ -3,8 +3,8 @@ import BaseSchema from '@ioc:Adonis/Lucid/Schema';
 export default class JwtTokens extends BaseSchema {
   protected tableName = 'jwt_tokens';
 
-  public async up() {
-    this.schema.createTable(this.tableName, (table) => {
+  public async up(): Promise<void> {
+    await this.schema.createTable(this.tableName, table => {
       table.increments('id');
       table
         .integer('user_id')
@@ -21,7 +21,7 @@ export default class JwtTokens extends BaseSchema {
     });
   }
 
-  public async down() {
-    this.schema.dropTable(this.tableName);
+  public async down(): Promise<void> {
+    await this.schema.dropTable(this.tableName);
   }
 }
