@@ -10,7 +10,7 @@ export default class ProductFilterValidator {
   public schema = schema.create({
     name: schema.string.optional(),
     categories: schema.array.optional().members(schema.string()),
-    size: schema.array.optional().members(schema.string()),
+    sizes: schema.array.optional().members(schema.string()),
   });
 
   public messages: CustomMessages = {

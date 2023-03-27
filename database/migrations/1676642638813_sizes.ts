@@ -7,6 +7,7 @@ export default class extends BaseSchema {
     await this.schema.createTable(this.tableName, table => {
       table.increments('id');
       table.string('size', 10).notNullable();
+      table.integer('amount').notNullable();
       table
         .integer('product_id')
         .unsigned()

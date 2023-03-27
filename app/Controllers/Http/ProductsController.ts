@@ -11,7 +11,9 @@ import ProductStoreValidator from 'App/Validators/ProductStoreValidator';
 
 export default class ProductsController {
   public async filter({ request }: HttpContextContract): Promise<Product[]> {
-    const { name, categories } = await request.validate(ProductFilterValidator);
+    const { name, categories, sizes } = await request.validate(
+      ProductFilterValidator
+    );
 
     const products = Product.query();
     if (name !== undefined) {
@@ -20,11 +22,15 @@ export default class ProductsController {
     if (categories !== undefined && categories.length > 0) {
       await products.whereIn('category_id', categories);
     }
-    // if (size !== undefined) {
-    //   await products
-    //     .join('sizes', 'sizes.product_id', '=', 'products.id')
-    //     .where('sizes.size', size);
-    // }
+    if (sizes !== undefined && sizes.length > 0) {
+      await products
+        .join('sizes', query => {
+          query
+            .on('sizes.product_id', '=', 'products.id')
+            .andOnIn('sizes.size', sizes);
+        })
+        .select('products.*');
+    }
     return await products.preload('images');
   }
 
