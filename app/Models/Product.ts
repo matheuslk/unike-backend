@@ -10,7 +10,6 @@ import {
 import { DateTime } from 'luxon';
 import Category from './Category';
 import Image from './Image';
-import Size from './Size';
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -23,9 +22,6 @@ export default class Product extends BaseModel {
   public price: number;
 
   @column()
-  public amount: number;
-
-  @column()
   public description: string;
 
   @column()
@@ -33,9 +29,6 @@ export default class Product extends BaseModel {
 
   @belongsTo(() => Category)
   public category: BelongsTo<typeof Category>;
-
-  @hasMany(() => Size)
-  public sizes: HasMany<typeof Size>;
 
   @hasMany(() => Image)
   public images: HasMany<typeof Image>;
@@ -48,7 +41,7 @@ export default class Product extends BaseModel {
 
   @beforeSave()
   public static async setDescription(product: Product): Promise<void> {
-    if (product.description === undefined) {
+    if (!product.description) {
       product.description = '';
     }
   }
