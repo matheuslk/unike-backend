@@ -10,18 +10,15 @@ export default class ProductStoreValidator {
   public schema = schema.create({
     name: schema.string([rules.minLength(4), rules.maxLength(45)]),
     price: schema.number([rules.range(1, 7000)]),
-    amount: schema.number([rules.range(1, 50)]),
     category_id: schema.number([rules.range(1, 6)]),
     description: schema.string.optional([rules.maxLength(255)]),
-    sizes: schema.array.optional().members(schema.string()),
     files: schema.array.optional().members(
       schema.file({
         size: '1mb',
         extnames: ['jpg', 'png', 'jpeg'],
       })
     ),
-    deleteFiles: schema.boolean.optional(),
-    deleteSizes: schema.boolean.optional(),
+    removeFiles: schema.boolean.optional(),
   });
 
   public messages: CustomMessages = {
