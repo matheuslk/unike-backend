@@ -2,7 +2,7 @@ import BaseSeeder from '@ioc:Adonis/Lucid/Seeder';
 import Image from 'App/Models/Image';
 
 export default class extends BaseSeeder {
-  public async run() {
+  public async run(): Promise<void> {
     await Image.createMany([
       {
         file_name: 'default.jpg',
